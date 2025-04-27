@@ -34,6 +34,6 @@ Deployed and managed using AWS CLI commands and manual configuration through AWS
 - `architecture_diagram.png` - (Optional) Visual representation of architecture.
 
 ## Live Demo
-Available through CloudFront: [Insert your CloudFront URL here]
+Available through CloudFront: https://d3hcimxotbg0fv.cloudfront.net/
 
 ---
