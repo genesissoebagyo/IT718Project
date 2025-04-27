@@ -1,0 +1,108 @@
+<!-- index.html -->
+<!-- Book Recommendation App - Frontend -->
+<!-- By Genesis Soebagyo -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Recommendation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #results {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .book {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            width: 180px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .book img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .book-title {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .book-author {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Discover Book Recommendations</h1>
+
+    <input type="text" id="genreInput" placeholder="Enter a genre (e.g., fantasy, comedy)">
+    <button onclick="recommendBook()">Get Recommendations</button>
+
+    <div id="results"></div>
+
+    <script>
+        async function recommendBook() {
+            const genre = document.getElementById('genreInput').value.trim();
+            if (!genre) {
+                alert('Please enter a genre.');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://pzvse9ra5c.execute-api.us-east-2.amazonaws.com/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ genre: genre })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API returned status ' + response.status);
+                }
+
+                const data = await response.json();
+
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+
+                if (data.recommendations && data.recommendations.length > 0) {
+                    data.recommendations.forEach(book => {
+                        const bookDiv = document.createElement('div');
+                        bookDiv.className = 'book';
+
+                        bookDiv.innerHTML = `
+                            <img src="${book.thumbnail}" alt="Book Cover">
+                            <div class="book-title">${book.title}</div>
+                            <div class="book-author">${book.author}</div>
+                        `;
+                        resultsDiv.appendChild(bookDiv);
+                    });
+                } else {
+                    resultsDiv.innerHTML = '<p>No recommendations found.</p>';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to get recommendations.');
+            }
+        }
+    </script>
+
+</body>
+</html>
